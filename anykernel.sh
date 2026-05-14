@@ -1,7 +1,7 @@
 ### AnyKernel3 Ramdisk Mod Script
 ## osm0sis @ xda-developers
-## Adapted for Xiaomi Mi 11 / venus
-## Based on Darkmoon Kernel installer style
+## Xiaomi Mi 11 / venus
+## Kernel-only installer, no ramdisk unpack
 
 ### AnyKernel setup
 # begin properties
@@ -9,7 +9,7 @@ properties() { '
 kernel.string=Venus Droidspaces Kernel by MiniGregoriio
 do.devicecheck=1
 do.modules=0
-do.systemless=1
+do.systemless=0
 do.cleanup=1
 do.cleanuponabort=0
 device.name1=venus
@@ -21,13 +21,8 @@ supported.versions=
 supported.patchlevels=
 '; } # end properties
 
-### AnyKernel install
-# begin attributes
-attributes() {
-set_perm_recursive 0 0 755 644 $ramdisk/*;
-set_perm_recursive 0 0 750 750 $ramdisk/init* $ramdisk/sbin;
-} # end attributes
 
+### AnyKernel install
 
 ## boot shell variables
 block=/dev/block/bootdevice/by-name/boot;
@@ -36,11 +31,13 @@ ramdisk_compression=auto;
 patch_vbmeta_flag=auto;
 
 # import functions/variables and setup patching - DO NOT REMOVE
-. tools/ak3-core.sh && attributes;
+. tools/ak3-core.sh;
 
 # boot install
-dump_boot;
-write_boot;
+# Use split_boot/flash_boot because this boot image may not contain a ramdisk.
+# We only need to replace the kernel Image.
+split_boot;
+flash_boot;
 ## end boot install
 
 
@@ -50,7 +47,6 @@ write_boot;
 #ramdisk_compression=auto;
 #patch_vbmeta_flag=auto;
 
-# reset for init_boot patching
 #reset_ak;
 
 # init_boot install
@@ -65,7 +61,6 @@ write_boot;
 #ramdisk_compression=auto;
 #patch_vbmeta_flag=auto;
 
-# reset for vendor_kernel_boot patching
 #reset_ak;
 
 # vendor_kernel_boot install
@@ -80,7 +75,6 @@ write_boot;
 #ramdisk_compression=auto;
 #patch_vbmeta_flag=auto;
 
-# reset for vendor_boot patching
 #reset_ak;
 
 # vendor_boot install
