@@ -1,56 +1,89 @@
-#!/bin/sh
-# AnyKernel3 Ramdisk Mod Script
-# Xiaomi Mi 11 / venus
-# Android 16 / SM8350 / lahaina
-# Kernel installer by MiniGregoriio
+### AnyKernel3 Ramdisk Mod Script
+## osm0sis @ xda-developers
+## Adapted for Xiaomi Mi 11 / venus
+## Based on Darkmoon Kernel installer style
 
 ### AnyKernel setup
-# global properties
+# begin properties
 properties() { '
-kernel.string=Venus SM8350 Android 16 Kernel by MiniGregoriio
+kernel.string=Venus Droidspaces Kernel by MiniGregoriio
 do.devicecheck=1
 do.modules=0
 do.systemless=1
 do.cleanup=1
 do.cleanuponabort=0
 device.name1=venus
-device.name2=venus_global
-device.name3=venus_cn
-device.name4=M2011K2C
-device.name5=M2011K2G
+device.name2=Venus
+device.name3=mi11
+device.name4=Mi11
+device.name5=Mi 11
 supported.versions=
 supported.patchlevels=
-supported.vendorpatchlevels=
 '; } # end properties
 
-
 ### AnyKernel install
-
-## boot files attributes
-boot_attributes() {
-  set_perm_recursive 0 0 755 644 $RAMDISK/*;
-  set_perm_recursive 0 0 750 750 $RAMDISK/init* $RAMDISK/sbin;
+# begin attributes
+attributes() {
+set_perm_recursive 0 0 755 644 $ramdisk/*;
+set_perm_recursive 0 0 750 750 $ramdisk/init* $ramdisk/sbin;
 } # end attributes
 
 
-# boot shell variables
-BLOCK=boot;
-IS_SLOT_DEVICE=auto;
-RAMDISK_COMPRESSION=auto;
-PATCH_VBMETA_FLAG=auto;
-
+## boot shell variables
+block=/dev/block/bootdevice/by-name/boot;
+is_slot_device=1;
+ramdisk_compression=auto;
+patch_vbmeta_flag=auto;
 
 # import functions/variables and setup patching - DO NOT REMOVE
-. tools/ak3-core.sh;
-
+. tools/ak3-core.sh && attributes;
 
 # boot install
 dump_boot;
-
-# No ramdisk modifications needed.
-# This package only replaces the kernel Image inside the existing boot image.
-
 write_boot;
-
-
 ## end boot install
+
+
+## init_boot shell variables
+#block=init_boot;
+#is_slot_device=1;
+#ramdisk_compression=auto;
+#patch_vbmeta_flag=auto;
+
+# reset for init_boot patching
+#reset_ak;
+
+# init_boot install
+#dump_boot;
+#write_boot;
+## end init_boot install
+
+
+## vendor_kernel_boot shell variables
+#block=vendor_kernel_boot;
+#is_slot_device=1;
+#ramdisk_compression=auto;
+#patch_vbmeta_flag=auto;
+
+# reset for vendor_kernel_boot patching
+#reset_ak;
+
+# vendor_kernel_boot install
+#split_boot;
+#flash_boot;
+## end vendor_kernel_boot install
+
+
+## vendor_boot shell variables
+#block=vendor_boot;
+#is_slot_device=1;
+#ramdisk_compression=auto;
+#patch_vbmeta_flag=auto;
+
+# reset for vendor_boot patching
+#reset_ak;
+
+# vendor_boot install
+#dump_boot;
+#write_boot;
+## end vendor_boot install
